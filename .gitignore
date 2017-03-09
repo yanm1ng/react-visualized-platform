@@ -1,0 +1,14 @@
+#IDE
+.idea/
+
+#npm
+node_modules/
+
+#build
+
+build/
+
+#log
+
+*.log
+
