@@ -12,3 +12,6 @@ build/
 
 *.log
 
+#spider
+
+list.action!*
