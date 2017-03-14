@@ -25,8 +25,8 @@ module.exports = {
 					babelrc: false,
 					presets: ['react', 'es2015', 'stage-3'],
 					plugins: [
-						 "transform-class-properties",
-						 ["import", { libraryName: "antd", style: "css" }]
+						"transform-class-properties",
+						["import", { libraryName: "antd", style: "css" }]
 					]
 				}
 			}, {
