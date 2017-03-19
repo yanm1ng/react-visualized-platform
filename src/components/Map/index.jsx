@@ -1,58 +1,165 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import createG2 from 'g2-react';
-import { Stat } from 'g2';
-import china from '../../config/china.js';
+import './index.scss';
+function randomData() {
+  return Math.round(Math.random() * 1000);
+}
 
-const Chart = createG2(chart => {
-  chart.polygon().position(Stat.map.region('name', china))
-    .color('value', '#F4EC91-#AF303C')
-    .label('name', { label: { fill: '#000', shadowBlur: 5, shadowColor: '#fff' } })
-    .style({
-      stroke: '#333',
-      lineWidth: 1
-    });
-  chart.render();
-});
-
+var option = {
+  title: {
+    text: 'iphone销量',
+    subtext: '纯属虚构',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    data: ['iphone3', 'iphone4', 'iphone5']
+  },
+  visualMap: {
+    min: 0,
+    max: 2500,
+    left: 'left',
+    top: 'bottom',
+    text: ['高', '低'],           // 文本，默认为数值文本
+    calculable: true
+  },
+  toolbox: {
+    show: true,
+    orient: 'vertical',
+    left: 'right',
+    top: 'center',
+    feature: {
+      dataView: { readOnly: false },
+      restore: {},
+      saveAsImage: {}
+    }
+  },
+  series: [
+    {
+      name: 'iphone3',
+      type: 'map',
+      mapType: 'china',
+      roam: false,
+      label: {
+        normal: {
+          show: true
+        },
+        emphasis: {
+          show: true
+        }
+      },
+      data: [
+        { name: '北京', value: randomData() },
+        { name: '天津', value: randomData() },
+        { name: '上海', value: randomData() },
+        { name: '重庆', value: randomData() },
+        { name: '河北', value: randomData() },
+        { name: '河南', value: randomData() },
+        { name: '云南', value: randomData() },
+        { name: '辽宁', value: randomData() },
+        { name: '黑龙江', value: randomData() },
+        { name: '湖南', value: randomData() },
+        { name: '安徽', value: randomData() },
+        { name: '山东', value: randomData() },
+        { name: '新疆', value: randomData() },
+        { name: '江苏', value: randomData() },
+        { name: '浙江', value: randomData() },
+        { name: '江西', value: randomData() },
+        { name: '湖北', value: randomData() },
+        { name: '广西', value: randomData() },
+        { name: '甘肃', value: randomData() },
+        { name: '山西', value: randomData() },
+        { name: '内蒙古', value: randomData() },
+        { name: '陕西', value: randomData() },
+        { name: '吉林', value: randomData() },
+        { name: '福建', value: randomData() },
+        { name: '贵州', value: randomData() },
+        { name: '广东', value: randomData() },
+        { name: '青海', value: randomData() },
+        { name: '西藏', value: randomData() },
+        { name: '四川', value: randomData() },
+        { name: '宁夏', value: randomData() },
+        { name: '海南', value: randomData() },
+        { name: '台湾', value: randomData() },
+        { name: '香港', value: randomData() },
+        { name: '澳门', value: randomData() }
+      ]
+    },
+    {
+      name: 'iphone4',
+      type: 'map',
+      mapType: 'china',
+      label: {
+        normal: {
+          show: true
+        },
+        emphasis: {
+          show: true
+        }
+      },
+      data: [
+        { name: '北京', value: randomData() },
+        { name: '天津', value: randomData() },
+        { name: '上海', value: randomData() },
+        { name: '重庆', value: randomData() },
+        { name: '河北', value: randomData() },
+        { name: '安徽', value: randomData() },
+        { name: '新疆', value: randomData() },
+        { name: '浙江', value: randomData() },
+        { name: '江西', value: randomData() },
+        { name: '山西', value: randomData() },
+        { name: '内蒙古', value: randomData() },
+        { name: '吉林', value: randomData() },
+        { name: '福建', value: randomData() },
+        { name: '广东', value: randomData() },
+        { name: '西藏', value: randomData() },
+        { name: '四川', value: randomData() },
+        { name: '宁夏', value: randomData() },
+        { name: '香港', value: randomData() },
+        { name: '澳门', value: randomData() }
+      ]
+    },
+    {
+      name: 'iphone5',
+      type: 'map',
+      mapType: 'china',
+      label: {
+        normal: {
+          show: true
+        },
+        emphasis: {
+          show: true
+        }
+      },
+      data: [
+        { name: '北京', value: randomData() },
+        { name: '天津', value: randomData() },
+        { name: '上海', value: randomData() },
+        { name: '广东', value: randomData() },
+        { name: '台湾', value: randomData() },
+        { name: '香港', value: randomData() },
+        { name: '澳门', value: randomData() }
+      ]
+    }
+  ]
+};
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      forceFit: true,
-      width: 500,
-      height: 450,
-      plotCfg: {
-        margin: [50, 80]
-      }
-    }
   }
   componentDidMount() {
-    const userData = [];
-    const features = china.features;
-    for (let i = 0; i < features.length; i++) {
-      const name = features[i].properties.name;
-      userData.push({
-        "name": name,
-        "value": Math.round(Math.random() * 1000)
-      });
-    }
-    this.setState({
-      data: userData
-    });
+    var chart = echarts.init(document.getElementById('main'), 'macarons');
+    chart.setOption(option);
   }
   render() {
     return (
       <div>
-        <Chart
-          data={this.state.data}
-          width={this.state.width}
-          height={this.state.height}
-          plotCfg={this.state.plotCfg}
-          forceFit={this.state.forceFit}
-        />
+        <div id="main"></div>
       </div>
     );
   }

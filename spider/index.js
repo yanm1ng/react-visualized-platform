@@ -3,6 +3,12 @@
 const request = require('request');
 const cheerio = require('cheerio');
 var path = require('path');
+const AV = require('leancloud-storage');
+
+AV.init({
+  appId: 'SiuLQajWrKuR3zDPRzfAOV1L-gzGzoHsz',
+  appKey: '8pYRy3bB7zDxolBkT5WyGOQJ'
+});
 
 const log = function () {
   console.log.apply(console, arguments)
@@ -11,18 +17,6 @@ const log = function () {
 const Data = function () {
   this.name = ''
   this.value = 0
-}
-
-const saveJSON = function (path, data) {
-  const fs = require('fs');
-  const s = JSON.stringify(data, null, 4)
-  fs.writeFile(path, s, function (error) {
-    if (error !== null) {
-      log('写入文件错误', error)
-    } else {
-      log('保存成功')
-    }
-  })
 }
 
 const dataFromJSON = function (data, json) {
@@ -91,15 +85,25 @@ const cachedUrl = function (pageNum, callback) {
 }
 
 const main = function () {
-  const data = []
+  const data = [];
   const path = __dirname + '/data.json';
+  const date = new Date().toLocaleDateString();
+  var FogData = AV.Object.extend('FogData');
+
+  var fogData = new FogData();
+  fogData.set('time', date);
 
   for (var i = 1; i < 11; i++) {
     cachedUrl(i, function (error, response, body) {
       if (error === null && response.statusCode === 200) {
         const json = jsonFromBody(body)
-        dataFromJSON(data, json)
-        saveJSON(path, data)
+        dataFromJSON(data, json);
+        fogData.set('data', data);
+        fogData.save().then(function (data) {
+          log('success', data);
+        }, function (error) {
+          log('error', error)
+        });
       } else {
         log('请求失败', error)
       }
