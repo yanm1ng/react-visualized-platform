@@ -5,6 +5,7 @@ import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import Login from '../components/Login/index.jsx';
 import Index from '../components/Index/index.jsx';
 import Map from '../components/Map/index.jsx';
+import City from '../components/City/index.jsx';
 
 class App extends React.Component {
   render() {
@@ -18,6 +19,7 @@ class App extends React.Component {
           <Route path="/index">
             <IndexRoute component={Map} />
             <Route path="/index/map*" component={Map} />
+            <Route path="/index/city*" component={City} />
           </Route>
         </Router>
       </div>
