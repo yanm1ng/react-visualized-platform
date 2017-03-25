@@ -7,7 +7,7 @@ import {
   Icon
 } from 'antd';
 import AV from 'leancloud-storage';
-import { convertData, timeFormat } from '../../common/convert.js';
+import { timeFormat } from '../../common/convert.js';
 
 AV.init({
   appId: 'SiuLQajWrKuR3zDPRzfAOV1L-gzGzoHsz',
@@ -17,68 +17,78 @@ AV.init({
 import './index.scss';
 
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
-  key: 'name',
-  render: text => <a href="#">{text}</a>,
+  title: '城市',
+  dataIndex: 'city',
+  key: 'city',
+  width: 200
 }, {
-  title: 'Age',
-  dataIndex: 'age',
-  key: 'age',
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-  key: 'address',
-}, {
-  title: 'Action',
-  key: 'action',
-  render: (text, record) => (
-    <span>
-      <a href="#">Action 一 {record.name}</a>
-      <span className="ant-divider" />
-      <a href="#">Delete</a>
-      <span className="ant-divider" />
-      <a href="#" className="ant-dropdown-link">
-        More actions <Icon type="down" />
-      </a>
-    </span>
-  ),
-}];
-
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
+  title: 'PM 2.5',
+  dataIndex: 'fog',
+  key: 'fog',
+  sorter: (a, b) => { return a.fog > b.fog }
 }];
 
 export default class City extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      loading: true,
+      dataSource: []
+    };
   }
   componentDidMount = () => {
-    
+    var today = timeFormat('yyyy-MM-dd');
+    this.getDataSource(today);
   }
-  getDataSource = (dateString) => {
-    
+  getDataSource = (date) => {
+    let that = this;
+    var {
+      dataSource,
+      loading
+    } = that.state;
+    that.setState({
+      loading: true
+    });
+
+    var query = new AV.Query('FogData');
+
+    query.equalTo('time', date);
+    query.find().then(function (results) {
+      if (results.length > 0) {
+        var data = results[0].attributes.data;
+        dataSource = [];
+        for (let i = 0; i < data.length; i++) {
+          dataSource.push({
+            key: i,
+            city: data[i].name,
+            fog: data[i].value
+          });
+        }
+        that.setState({
+          loading: false,
+          dataSource
+        })
+      } else {
+        message.error('网络出错');
+        that.setState({
+          loading: false
+        })
+      }
+    });
   }
   render() {
+    const {
+      loading,
+      dataSource
+    } = this.state;
+
     return (
       <div className="container">
         <div>
           <span>请选择雾霾数据日期：</span>
           <DatePicker onChange={(date, dateString) => this.getDataSource(dateString)} />
-          <Table className="my-table" columns={columns} dataSource={data} />
+          <Table className="my-table" columns={columns} dataSource={dataSource} loading={loading}/>
         </div>
       </div>
     );
