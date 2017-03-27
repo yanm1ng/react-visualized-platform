@@ -25,7 +25,7 @@ const columns = [{
   title: 'PM 2.5',
   dataIndex: 'fog',
   key: 'fog',
-  sorter: (a, b) => { return a.fog > b.fog }
+  sorter: (a, b) => a.fog > b.fog
 }];
 
 export default class City extends React.Component {
