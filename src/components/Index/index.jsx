@@ -25,7 +25,10 @@ export default class Index extends React.Component {
           <Icon type="compass" />全国城市
         </Menu.Item>
         <Menu.Item key="city">
-          <Icon type="flag" />个体城市
+          <Icon type="flag" />所有城市
+        </Menu.Item>
+        <Menu.Item key="line">
+          <Icon type="area-chart" />城市折线
         </Menu.Item>
       </Menu>
     );
