@@ -7,7 +7,7 @@ import {
   message
 } from 'antd';
 import AV from 'leancloud-storage';
-import { timeFormat, getBetweenTime } from '../../common/convert.js';
+import { timeFormat } from '../../common/convert.js';
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
 
@@ -63,8 +63,22 @@ export default class Line extends React.Component {
       this.chart.showLoading();
       var query = new AV.Query('FogData');
       
-      const arr = getBetweenTime(range[0], range[1]);
-      console.log(arr);
+      var startQuery = new AV.Query('FogData');
+      startQuery.greaterThanOrEqualTo('createdAt', new Date(range[0] + ' 00:00:00'));
+      var endQuery = new AV.Query('FogData');
+      endQuery.lessThan('createdAt', new Date(range[1] + ' 00:00:00'));
+
+      var query = AV.Query.and(startQuery, endQuery);
+      query.find().then(function (results) {
+        if (results.length > 0) {
+          for (let i = 0; i < results.length; i++) {
+            var data = results[i].attributes.data;
+            var time = results[i].attributes.time;
+
+          }
+        }
+      }, function (error) {
+      });
     } else {
       message.info('请选择日期区间和对比城市');
     }
