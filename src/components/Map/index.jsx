@@ -215,7 +215,7 @@ export default class Map extends React.Component {
     let that = this;
     that.chart.showLoading();
     var query = new AV.Query('FogData');
-
+    
     query.equalTo('time', date);
 
     query.find().then(function (results) {

@@ -30,3 +30,19 @@ export function timeFormat(fmt) {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
+
+export function getBetweenTime(start, end) {
+  var arr = [];
+  start = new Date(start);
+  end = new Date(end);
+
+  while ((end - start) >= 0) {
+    var year = start.getFullYear();
+    var month = start.getMonth().toString().length == 1 ? "0" + (start.getMonth() + 1) : (end.getMonth() + 1);
+    var day = start.getDate().toString().length == 1 ? "0" + start.getDate() : end.getDate();
+    arr.push(year + "-" + month + "-" + day);
+
+    start.setDate(start.getDate() + 1);
+  }
+  return arr;
+}
