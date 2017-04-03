@@ -54,33 +54,100 @@ export default class Line extends React.Component {
     })
   }
   renderCharts = () => {
+    let that = this;
     const {
       range,
       selected
-    } = this.state;
+    } = that.state;
 
     if (range.length > 0 && selected.length > 0) {
       this.chart.showLoading();
       var query = new AV.Query('FogData');
-      
+
       var startQuery = new AV.Query('FogData');
       startQuery.greaterThanOrEqualTo('createdAt', new Date(range[0] + ' 00:00:00'));
       var endQuery = new AV.Query('FogData');
-      endQuery.lessThan('createdAt', new Date(range[1] + ' 00:00:00'));
+      endQuery.lessThanOrEqualTo('createdAt', new Date(range[1] + ' 00:00:00'));
 
       var query = AV.Query.and(startQuery, endQuery);
       query.find().then(function (results) {
         if (results.length > 0) {
-          for (let i = 0; i < results.length; i++) {
-            var data = results[i].attributes.data;
-            var time = results[i].attributes.time;
+          var series = [];
+          var timeline = [];
+          var values = {};
 
+          for (let i = 0; i < results.length; i++) {
+            var {
+              data,
+              time
+            } = results[i].attributes;
+
+            for (let j = 0; j < selected.length; j++) {
+              var city = selected[j];
+              for (let k = 0; k < data.length; k++) {
+                if (data[k].name === city) {
+                  if (!values[city]) {
+                    values[city] = [];
+                    values[city].push(data[k].value);
+                  } else {
+                    values[city].push(data[k].value);
+                  }
+                }
+              }
+            }
+            timeline.push(time);
           }
+          for (let i = 0; i < selected.length; i++) {
+            series.push({
+              name: selected[i],
+              type: 'line',
+              stack: 'PM2.5',
+              data: values[selected[i]]
+            })
+          }
+          var option = {
+            title: {
+              text: 'PM 2.5城市对比图'
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: selected
+            },
+            toolbox: {
+              feature: {
+                saveAsImage: {}
+              }
+            },
+            grid: {
+              left: '3%',
+              right: '4%',
+              bottom: '3%',
+              containLabel: true
+            },
+            xAxis: [
+              {
+                type: 'category',
+                boundaryGap: false,
+                data: timeline
+              }
+            ],
+            yAxis: [
+              {
+                type: 'value'
+              }
+            ],
+            series: series
+          }
+          that.chart.setOption(option);
+          that.chart.hideLoading();
         }
       }, function (error) {
       });
     } else {
       message.info('请选择日期区间和对比城市');
+      that.chart.hideLoading();
     }
   }
   render() {

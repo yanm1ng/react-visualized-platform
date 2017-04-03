@@ -12,6 +12,13 @@ export default class Index extends React.Component {
       current: 'map',
     }
   }
+  componentDidMount() {
+    var arr = window.location.hash.split('/');
+    var current = arr[2];
+    this.setState({
+      current
+    });
+  }
   handleClick = (e) => {
     this.setState({
       current: e.key
@@ -20,7 +27,7 @@ export default class Index extends React.Component {
   }
   render() {
     return (
-      <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+      <Menu onClick={(e) => this.handleClick(e)} selectedKeys={[this.state.current]} mode="horizontal">
         <Menu.Item key="map">
           <Icon type="compass" />全国城市
         </Menu.Item>

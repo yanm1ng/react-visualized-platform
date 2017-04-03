@@ -159,4 +159,4 @@ const store = function () {
 
 //main(13);
 //1-13
-//store();
+store();
