@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 const request = require('request');
 const cheerio = require('cheerio');
 var path = require('path');
@@ -19,11 +19,14 @@ Date.prototype.Format = function (fmt) {
     "q+": Math.floor((this.getMonth() + 3) / 3),
     "S": this.getMilliseconds()
   };
-  if (/(y+)/.test(fmt))
+  if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-  for (var k in o)
-    if (new RegExp("(" + k + ")").test(fmt))
+  }
+  for (var k in o) {
+    if (new RegExp("(" + k + ")").test(fmt)) {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    }
+  }
   return fmt;
 }
 
@@ -49,11 +52,9 @@ const dataFromJSON = function (data, json) {
 }
 
 const jsonFromBody = function (body) {
-  const options = {
+  const e = cheerio.load(body, {
     decodeEntities: false
-  };
-
-  const e = cheerio.load(body, options);
+  });
   const json = e('#gisDataJson').attr('value');
 
   return json;
@@ -62,15 +63,11 @@ const jsonFromBody = function (body) {
 const writeToFile = function (path, data) {
   const fs = require('fs');
   fs.writeFile(path, data, function (error) {
-    if (error !== null) {
-      log('写入失败', path);
-    } else {
-      log('写入成功', path);
-    }
+    log(path);
   })
 }
 
-const cachedUrl = function (pageNum, callback) {
+const cachedUrl = function (pageNum) {
   const fs = require('fs');
   if (pageNum == 1) {
     var formData = {
@@ -84,9 +81,8 @@ const cachedUrl = function (pageNum, callback) {
     request.post(postData, function (error, response, body) {
       if (error === null) {
         writeToFile(path, body);
-        callback(error, response, body);
       }
-    })
+    });
   } else {
     var path = __dirname + `/list.action!${pageNum - 1}`;
     fs.readFile(path, function (err, data) {
@@ -113,23 +109,12 @@ const cachedUrl = function (pageNum, callback) {
       request.post(postData, function (error, response, body) {
         if (error === null) {
           writeToFile(path, body);
-          callback(error, response, body);
         }
       })
-    })
+    });
   }
 }
 
-
-const main = function (page) {
-  cachedUrl(page, function (error, response, body) {
-    if (error === null && response.statusCode === 200) {
-
-    } else {
-      log('请求失败', error);
-    }
-  })
-}
 
 const store = function () {
   const fs = require('fs');
@@ -146,7 +131,6 @@ const store = function () {
       var json = jsonFromBody(file);
       dataFromJSON(data, json);
 
-      //console.log(data);
       fogData.set('data', data);
       fogData.save().then(function (data) {
         log('success');
@@ -157,6 +141,6 @@ const store = function () {
   }
 }
 
-//main(13);
+//cachedUrl(13);
 //1-13
 store();
