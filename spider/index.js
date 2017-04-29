@@ -1,7 +1,5 @@
-"use strict";
 const request = require('request');
 const cheerio = require('cheerio');
-var path = require('path');
 const AV = require('leancloud-storage');
 
 AV.init({
@@ -30,16 +28,19 @@ Date.prototype.Format = function (fmt) {
   return fmt;
 }
 
-const log = function () {
-  console.log.apply(console, arguments);
-}
-
 const Data = function () {
   this.name = '';
   this.value = 0;
 }
 
-const dataFromJSON = function (data, json) {
+var ALL = [];
+
+const dataFromBody = function (data, body) {
+  const e = cheerio.load(body, {
+    decodeEntities: false
+  });
+  const json = e('#gisDataJson').attr('value');
+
   var airObjects = JSON.parse(json);
   for (var i = 0; i < airObjects.length; i++) {
     var airObject = airObjects[i];
@@ -51,43 +52,23 @@ const dataFromJSON = function (data, json) {
   }
 }
 
-const jsonFromBody = function (body) {
-  const e = cheerio.load(body, {
-    decodeEntities: false
-  });
-  const json = e('#gisDataJson').attr('value');
+const postRequest = function (pageNum, cb) {
+  var postData = {};
 
-  return json;
-}
-
-const writeToFile = function (path, data) {
-  const fs = require('fs');
-  fs.writeFile(path, data, function (error) {
-    log(path);
-  })
-}
-
-const cachedUrl = function (pageNum) {
-  const fs = require('fs');
   if (pageNum == 1) {
-    var formData = {
-      'xmlname': '1462259560614'
+    postData = {
+      url: 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action',
+      formData: {
+        'xmlname': '1462259560614'
+      }
     };
+  } else {
+    var today = new Date();
+    var yesterday = today.setDate(today.getDate() - 1);
+    const date = new Date(yesterday).Format('yyyy-MM-dd');
     var postData = {
       url: 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action',
-      formData
-    };
-    const path = __dirname + `/list.action!${pageNum}`;
-    request.post(postData, function (error, response, body) {
-      if (error === null) {
-        writeToFile(path, body);
-      }
-    });
-  } else {
-    var path = __dirname + `/list.action!${pageNum - 1}`;
-    fs.readFile(path, function (err, data) {
-      var json = jsonFromBody(data);
-      var formData = {
+      formData: {
         'page.pageNo': `${pageNum}`,
         'page.orderBy': '',
         'page.order': '',
@@ -95,52 +76,62 @@ const cachedUrl = function (pageNum) {
         'ordertype': '',
         'xmlname': '1462259560614',
         'queryflag': 'open',
-        'gisDataJson': json,
-        'V_DATE': JSON.parse(json)[0].OPER_DATE,
-        'E_DATE': JSON.parse(json)[0].OPER_DATE,
+        'gisDataJson': '',
+        'V_DATE': date,
+        'E_DATE': date,
         'isdesignpatterns': 'false',
         'CITY': ''
-      };
-      var postData = {
-        url: 'http://datacenter.mep.gov.cn:8099/ths-report/report!list.action',
-        formData
-      };
-      path = __dirname + `/list.action!${pageNum}`;
-      request.post(postData, function (error, response, body) {
-        if (error === null) {
-          writeToFile(path, body);
-        }
-      })
-    });
+      }
+    };
   }
+  request.post(postData, function (error, response, body) {
+    if (error === null) {
+      dataFromBody(ALL, body);
+      cb && cb();
+    }
+  });
 }
 
 
-const store = function () {
-  const fs = require('fs');
-  const data = [];
+const saveData = function (data) {
   const date = new Date().Format('yyyy-MM-dd');
   var FogData = AV.Object.extend('FogData');
 
   var fogData = new FogData();
   fogData.set('time', date);
-
-  for (var i = 1; i < 14; i++) {
-    var path = __dirname + `/list.action!${i}`;
-    fs.readFile(path, function (err, file) {
-      var json = jsonFromBody(file);
-      dataFromJSON(data, json);
-
-      fogData.set('data', data);
-      fogData.save().then(function (data) {
-        log('success');
-      }, function (error) {
-        log('error', error);
-      });
-    });
-  }
+  fogData.set('data', data);
+  
+  fogData.save().then(function (data) {
+    console.log('success');
+  }, function (error) {
+    console.log('error', error);
+  });
 }
 
-//cachedUrl(13);
-//1-13
-store();
+postRequest(1, () => {
+  postRequest(2, () => {
+    postRequest(3, () => {
+      postRequest(4, () => {
+        postRequest(5, () => {
+          postRequest(6, () => {
+            postRequest(7, () => {
+              postRequest(8, () => {
+                postRequest(9, () => {
+                  postRequest(10, () => {
+                    postRequest(11, () => {
+                      postRequest(12, () => {
+                        postRequest(13, () => {
+                          saveData(ALL);
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+})
