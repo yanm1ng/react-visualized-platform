@@ -9,7 +9,7 @@ npm run dev
 
 #### step2
 
-open bowser at [](http://localhost:8888/index/map)
+open bowser at [http://localhost:8888/index/map](http://localhost:8888/index/map)
 
 #### 数据来源
 http://datacenter.mep.gov.cn
