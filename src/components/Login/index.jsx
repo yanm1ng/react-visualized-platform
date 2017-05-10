@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
+import cookie from '../../common/cookie.js';
 const FormItem = Form.Item;
 import './index.scss';
 
@@ -15,7 +16,12 @@ class Login extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        if (values.username == 'root' && values.password == 'root') {
+          cookie.set('login', true)
+          window.location.hash = '#/index/'
+        } else {
+          message.error('登录失败')
+        }
       }
     });
   }
@@ -24,7 +30,7 @@ class Login extends React.Component {
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem>
-          {getFieldDecorator('userName', {
+          {getFieldDecorator('username', {
             rules: [{ required: true, message: 'Please input your username!' }],
           })(
             <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="Username" />
