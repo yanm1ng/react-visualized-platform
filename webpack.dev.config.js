@@ -4,7 +4,10 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ['webpack/hot/dev-server', path.resolve(__dirname, './src/router/index')],
+  entry: [
+    'webpack-hot-middleware/client',
+    path.resolve(__dirname, './src/router/index')
+  ],
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'bundle.js'
@@ -28,7 +31,8 @@ module.exports = {
             "transform-class-properties",
             ["import", { libraryName: "antd", style: "css" }]
           ]
-        }
+        },
+        exclude: /^node_modules$/
       }, {
         test: /\.(css|scss)$/,
         loader: ExtractTextPlugin.extract("style", "css!sass!autoprefixer")
@@ -40,13 +44,25 @@ module.exports = {
     ]
   },
   resolve: {
+    root: path.resolve(__dirname, './node_modules'),
     extensions: ['', '.js', '.jsx'], //后缀名自动补全
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      output: {
+				comments: false,
+			},
+			compressor: {
+				warnings: false
+			}
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin('common.js'),
     new ExtractTextPlugin("[name].css"),
+    new webpack.DllReferencePlugin({
+			context: __dirname,
+			manifest: require('./manifest.json'),
+		}),
     new HtmlWebpackPlugin({
       filename: '../index.html',
       template: './src/index.html',

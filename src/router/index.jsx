@@ -11,16 +11,20 @@ import Line from '../components/Line/index.jsx';
 
 const history = createHashHistory({ queryKey: false });
 
+function requireEnter (nextState, replace) {
+  console.log(nextState, replace)
+}
+
 class App extends React.Component {
   render() {
     return (
       <div>
         <Router history={history}>
-          <Route path="/index*" component={Index} />
-          <Route path="/login" component={Login} />
+          <Route path="/index*" component={Index} onEnter={requireEnter}/>
+          <Route path="/login" component={Login} onEnter={requireEnter}/>
         </Router>
         <Router history={history}>
-          <Route path="/index">
+          <Route path="/index" onEnter={requireEnter}>
             <IndexRoute component={Map} />
             <Route path="/index/map*" component={Map} />
             <Route path="/index/city*" component={City} />
