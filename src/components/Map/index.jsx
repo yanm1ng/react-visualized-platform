@@ -269,12 +269,14 @@ export default class Map extends React.Component {
     for (var i = 0; i < mainSeries.dataIndex.length; i++) {
       var rawIndex = mainSeries.dataIndex[i];
       var dataItem = mapData[0][rawIndex];
-      var pmValue = dataItem.value[2];
+      if (dataItem) {
+        var pmValue = dataItem.value[2];
 
-      sum += pmValue;
-      count++;
+        sum += pmValue;
+        count++;
 
-      selectedItems.push(dataItem);
+        selectedItems.push(dataItem);
+      }
     }
     selectedItems.sort(function (a, b) {
       return a.value[2] - b.value[2];
