@@ -18,7 +18,7 @@ class Login extends React.Component {
       if (!err) {
         if (values.username == 'root' && values.password == 'root') {
           cookie.set('login', true)
-          window.location.hash = '#/index/'
+          window.location.hash = '#/map'
         } else {
           message.error('登录失败')
         }

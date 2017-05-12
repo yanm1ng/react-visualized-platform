@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Index from '../Index/index.jsx';
+
 import {
   DatePicker,
   message
@@ -300,12 +302,15 @@ export default class Map extends React.Component {
   }
   render() {
     return (
-      <div className="container">
-        <div>
-          <span>请选择雾霾数据日期：</span>
-          <DatePicker onChange={(date, dateString) => this.getChartsOptions(dateString)} />
+      <div>
+        <Index />
+        <div className="container">
+          <div>
+            <span>请选择雾霾数据日期：</span>
+            <DatePicker onChange={(date, dateString) => this.getChartsOptions(dateString)} />
+          </div>
+          <div id="main"></div>
         </div>
-        <div id="main"></div>
       </div>
     );
   }

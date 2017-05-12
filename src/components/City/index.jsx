@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Index from '../Index/index.jsx';
 import {
   DatePicker,
   message,
@@ -84,11 +85,14 @@ export default class City extends React.Component {
     } = this.state;
 
     return (
-      <div className="container">
-        <div>
-          <span>请选择雾霾数据日期：</span>
-          <DatePicker onChange={(date, dateString) => this.getDataSource(dateString)} />
-          <Table className="my-table" columns={columns} dataSource={dataSource} loading={loading}/>
+      <div>
+        <Index />
+        <div className="container">
+          <div>
+            <span>请选择雾霾数据日期：</span>
+            <DatePicker onChange={(date, dateString) => this.getDataSource(dateString)} />
+            <Table className="my-table" columns={columns} dataSource={dataSource} loading={loading}/>
+          </div>
         </div>
       </div>
     );

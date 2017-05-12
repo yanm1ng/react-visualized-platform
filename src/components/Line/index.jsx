@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Index from '../Index/index.jsx';
+
 import cities from '../../config/city.js';
 import {
   DatePicker,
@@ -152,15 +154,18 @@ export default class Line extends React.Component {
   }
   render() {
     return (
-      <div className="container">
-        <div>
-          <span>请选择雾霾数据日期和城市：</span>
-          <RangePicker onChange={(date, dateString) => this.getDateRange(dateString)} />
-          <Select className="myselecter" multiple placeholder="选择对比城市" onChange={(selected) => this.handleSelect(selected)}>
-            {options}
-          </Select>
+      <div>
+        <Index />
+        <div className="container">
+          <div>
+            <span>请选择雾霾数据日期和城市：</span>
+            <RangePicker onChange={(date, dateString) => this.getDateRange(dateString)} />
+            <Select className="myselecter" multiple placeholder="选择对比城市" onChange={(selected) => this.handleSelect(selected)}>
+              {options}
+            </Select>
+          </div>
+          <div id="main"></div>
         </div>
-        <div id="main"></div>
       </div>
     );
   }
