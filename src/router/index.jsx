@@ -11,7 +11,8 @@ import Cookie from '../common/cookie.js';
 
 
 function requireEnter (nextState, replace) {
-  if (!Cookie.get('login')) {
+
+  if (Cookie.get('login') == 'false') {
     window.location.hash = '#/login/'
   }
 }
@@ -22,9 +23,9 @@ class App extends React.Component {
       <div>
         <Router history={hashHistory}>
           <Route path="login" component={Login} onEnter={requireEnter}/>
-          <Route path="map" component={Map} />
-          <Route path="city" component={City} />
-          <Route path="line" component={Line} />
+          <Route path="map" component={Map} onEnter={requireEnter}/>
+          <Route path="city" component={City} onEnter={requireEnter}/>
+          <Route path="line" component={Line} onEnter={requireEnter}/>
         </Router>
       </div>
     )

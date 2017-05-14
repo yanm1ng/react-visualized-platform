@@ -21,7 +21,8 @@ const columns = [{
   title: '城市',
   dataIndex: 'city',
   key: 'city',
-  width: 200
+  width: 200,
+  render: (record) => <a href={"http://www.baidu.com/s?ie=utf-8&wd="+ record +"%20雾霾"} target="_blank">{record}</a>
 }, {
   title: 'PM 2.5',
   dataIndex: 'fog',
