@@ -5,8 +5,11 @@ import {
   DatePicker,
   message,
   Table,
-  Icon
+  Icon,
+  Input
 } from 'antd';
+const Search = Input.Search;
+
 import AV from 'leancloud-storage';
 import { timeFormat } from '../../common/convert.js';
 
@@ -36,7 +39,9 @@ export default class City extends React.Component {
 
     this.state = {
       loading: true,
-      dataSource: []
+      dataSource: [],
+      searched: false,
+      searchSource: []
     };
   }
   componentDidMount = () => {
@@ -69,6 +74,7 @@ export default class City extends React.Component {
         }
         that.setState({
           loading: false,
+          searched: false,
           dataSource
         })
       } else {
@@ -79,10 +85,35 @@ export default class City extends React.Component {
       }
     });
   }
+  searchData = (value) => {
+    var {
+      dataSource,
+      loading
+    } = this.state;
+    if (value == '') {
+      this.setState({
+        searched: false,
+      })
+    } else {
+      this.setState({
+        loading: true
+      })
+      var searchSource = dataSource.filter(item => {
+        return item.city.indexOf(value) > -1
+      })
+      this.setState({
+        loading: false,
+        searched: true,
+        searchSource
+      })
+    }
+  }
   render() {
     const {
       loading,
-      dataSource
+      dataSource,
+      searched,
+      searchSource
     } = this.state;
 
     return (
@@ -91,8 +122,10 @@ export default class City extends React.Component {
         <div className="container">
           <div>
             <span>请选择雾霾数据日期：</span>
-            <DatePicker onChange={(date, dateString) => this.getDataSource(dateString)} />
-            <Table className="my-table" columns={columns} dataSource={dataSource} loading={loading}/>
+            <DatePicker onChange={(date, dateString) => this.getDataSource(dateString)} style={{ marginRight: 20 }}/>
+            <span>搜索城市：</span>
+            <Search placeholder="输入城市名称" style={{ width: 200 }} onChange={(e) => this.searchData(e.target.value)} onSearch={value => this.searchData(value)}/>
+            <Table className="my-table" columns={columns} dataSource={searched ? searchSource : dataSource} loading={loading}/>
           </div>
         </div>
       </div>

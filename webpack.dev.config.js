@@ -12,13 +12,6 @@ module.exports = {
     path: path.resolve(__dirname, './build'),
     filename: 'bundle.js'
   },
-  devServer: {
-    contentBase: '',
-    devtool: 'eval',
-    hot: true,
-    inline: true,
-    port: 8888
-  },
   module: {
     loaders: [
       {
@@ -57,8 +50,11 @@ module.exports = {
 			}
     }),
     new webpack.HotModuleReplacementPlugin(),
+
     new webpack.optimize.CommonsChunkPlugin('common.js'),
+
     new ExtractTextPlugin("[name].css"),
+
     new webpack.DllReferencePlugin({
 			context: __dirname,
 			manifest: require('./manifest.json'),
