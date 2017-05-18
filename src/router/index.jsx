@@ -2,18 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
-import Login from '../components/Login/index.jsx';
+import Login from '../components/Login/index.js';
+import Map from '../components/Map/index.js';
+import City from '../components/City/index.js';
+import Line from '../components/Line/index.js';
 
-import Map from '../components/Map/index.jsx';
-import City from '../components/City/index.jsx';
-import Line from '../components/Line/index.jsx';
 import Cookie from '../common/cookie.js';
 
-
-function requireEnter (nextState, replace) {
-
+function requireEnter(nextState, replace) {
   if (Cookie.get('login') == 'false') {
-    window.location.hash = '#/login/'
+    window.location.hash = '#/'
   }
 }
 
@@ -22,10 +20,10 @@ class App extends React.Component {
     return (
       <div>
         <Router history={hashHistory}>
-          <Route path="login" component={Login} onEnter={requireEnter}/>
-          <Route path="map" component={Map} onEnter={requireEnter}/>
-          <Route path="city" component={City} onEnter={requireEnter}/>
-          <Route path="line" component={Line} onEnter={requireEnter}/>
+          <Route path="/" getComponent={Login} onEnter={requireEnter} />
+          <Route path="map" getComponent={Map} onEnter={requireEnter} />
+          <Route path="city" getComponent={City} onEnter={requireEnter} />
+          <Route path="line" getComponent={Line} onEnter={requireEnter} />
         </Router>
       </div>
     )

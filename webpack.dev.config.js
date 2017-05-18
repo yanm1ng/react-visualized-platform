@@ -10,7 +10,8 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, './build'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    chunkFilename: '[name].[chunkhash:10].js',
   },
   module: {
     loaders: [

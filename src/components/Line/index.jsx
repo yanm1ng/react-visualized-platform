@@ -55,6 +55,9 @@ export default class Line extends React.Component {
       selected
     })
   }
+  disabledDate = (e) => {
+    return e && e.valueOf() > Date.now();
+  }
   renderCharts = () => {
     let that = this;
     const {
@@ -159,7 +162,7 @@ export default class Line extends React.Component {
         <div className="container">
           <div>
             <span>请选择雾霾数据日期和城市：</span>
-            <RangePicker onChange={(date, dateString) => this.getDateRange(dateString)} />
+            <RangePicker disabledDate={(e) => this.disabledDate(e)} onChange={(date, dateString) => this.getDateRange(dateString)} />
             <Select className="myselecter" multiple placeholder="选择对比城市" onChange={(selected) => this.handleSelect(selected)}>
               {options}
             </Select>

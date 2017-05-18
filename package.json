@@ -1,13 +1,13 @@
 {
-  "name": "react-redux-app",
-  "version": "1.0.0",
-  "description": "react redux",
+  "name": "react-visualized-platform",
+  "version": "1.0.1",
+  "description": "react visualized",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --progress --colors",
     "dev": "node server.js",
-    "dll": "webpack --config  webpack.dll.config.js --progress"
+    "dll": "webpack --config webpack.dll.config.js --progress"
   },
   "author": "yanming",
   "dependencies": {
@@ -31,6 +31,7 @@
     "babel-preset-stage-3": "^6.22.0",
     "css-loader": "^0.23.1",
     "file-loader": "^0.9.0",
+    "happypack": "^3.0.3",
     "html-webpack-plugin": "^2.24.1",
     "jsx-loader": "^0.13.2",
     "node-sass": "^3.8.0",

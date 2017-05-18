@@ -24,7 +24,7 @@ export default class Index extends React.Component {
   }
   logout = () => {
     Cookie.set('login', false);
-    window.location.hash = '#/login/'
+    window.location.hash = '#/'
   }
   render() {
     return (
